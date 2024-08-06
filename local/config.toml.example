@@ -1,0 +1,7 @@
+[driver]
+path = "local/chromedriver" # chromedriver target path
+connect_timeout = 5000      # download url connect timeout
+timeout = 10000             # download total timeout
+
+[browser]
+path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
