@@ -3,6 +3,13 @@ name = "chromedriver-auto-update"
 version = "0.1.0"
 author = "licht.cui"
 edition = "2021"
+rust-version = "1.80"
+description = "Ensure your Chromedriver remains up-to-date alongside your Chrome browser"
+readme = "README.md"
+repository = "https://github.com/lichtcui/chromedriver-auto-update"
+license = "MIT"
+keywords = ["chromedriver"]
+publish = ["chromedriver-auto-update"]
 
 [dependencies]
 regex = "1.10"
