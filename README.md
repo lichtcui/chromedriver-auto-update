@@ -1,31 +1,43 @@
-# chromedriver-auto-update
+# chromedriver
 
-auto download chromedriver when browser/driver version not matched
+Automatically download Chromedriver when the browser/driver versions do not match.
 
-## Usage
-
-1. copy config file
-```bash
-cp ./local/config.toml.example ./local/config.toml
-```
-
-2. edit config file
-```toml
-[driver]
-path = "local/chromedriver"          # local path
-# path = "/usr/local/bin/chromedriver" # This is the path we use on Mac.
-
-# Increase these settings if you are frequently experiencing timeouts, or consider using a VPN.
-connect_timeout = 5000               # download url connect timeout
-timeout = 10000                      # download total timeout
-```
-
-3. run
-```bash
+# usage
+```no_run
 cargo run
+```
 
-# or
+# code usage
+### example with default config
 
-cargo build --release
-./target/release/chromedriver-auto-update
+```no_run
+use chromedriver_auto_update::ChromeDriver;
+
+let mut driver = ChromeDriver::new();
+driver.init().await;
+
+println!("driver version {}", driver.version);
+println!("browser version {}", driver.browser_version);
+
+driver.try_download().await;
+```
+
+### example with custom config
+
+```no_run
+use chromedriver_auto_update::ChromeDriver;
+
+let mut driver = ChromeDriver::new();
+ driver
+   .set_driver_path("/other/path")
+   .set_browser_path("/other/path")
+   .set_connect_timeout(1000)
+   .set_timeout(2000)
+   .init()
+   .await;
+
+println!("driver version {}", driver.version);
+println!("browser version {}", driver.browser_version);
+
+driver.try_download().await;
 ```
