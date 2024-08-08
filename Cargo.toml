@@ -1,7 +1,7 @@
 [package]
 name = "chromedriver-auto-update"
 version = "0.1.0"
-author = "licht.cui"
+authors = ["licht.cui <lichtcui@gmail.com>"]
 edition = "2021"
 rust-version = "1.80"
 description = "Ensure your Chromedriver remains up-to-date alongside your Chrome browser"
@@ -12,6 +12,7 @@ keywords = ["chromedriver"]
 publish = ["chromedriver-auto-update"]
 
 [dependencies]
+clap = { version = "4.5", features = ["derive"] }
 regex = "1.10"
 reqwest = { version = "0.12", features = ["json"] }
 tokio = { version = "1", features = ["full"] }
