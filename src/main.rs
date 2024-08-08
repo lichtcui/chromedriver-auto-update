@@ -5,7 +5,7 @@ use clap::Parser;
 #[command(version, about, long_about = None)]
 struct Args {
     #[arg(short, long, default_value = "/usr/local/bin/chromedriver")]
-    dirver_path: String,
+    driver_path: String,
     #[arg(
         short,
         long,
@@ -25,7 +25,7 @@ async fn main() {
 
     let mut driver = ChromeDriver::new();
     driver
-        .set_driver_path(&args.dirver_path)
+        .set_driver_path(&args.driver_path)
         .set_browser_path(&args.browser_path)
         .set_connect_timeout(args.connect_timeout)
         .set_timeout(args.timeout)

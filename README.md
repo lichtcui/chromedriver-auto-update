@@ -4,23 +4,38 @@ Automatically download Chromedriver when the browser/driver versions do not matc
 
 # usage
 
-### build & run with arguments
+### install & run
+
 ```bash
-cargo build --release
-./target/release/chromedriver-auto-update --dirver-path="/usr/local/bin/chromedriver" --browser-path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+cargo install chromedriver-update
+
+# use default values
+chromedriver-update
+
+# or
+chromedriver-update --driver-path="/driver/path" --browser-path="/browser/path"
 ```
 
-### no build && with arguments
+### build source code & run with arguments
+
 ```bash
-cargo run -- --dirver-path="/usr/local/bin/chromedriver" --browser-path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+cargo build --release
+./target/release/chromedriver-auto-update --driver-path="/driver/path" --browser-path="/browser/path"
+```
+
+### run source code && with arguments
+
+```bash
+cargo run -- --driver-path="/driver/path" --browser-path="/browser/path"
 ```
 
 ### arguments:
 
 these default values are only useful for mac
+
 ```txt
 Options:
-  -d, --dirver-path <DIRVER_PATH>
+  -d, --driver-path <driver_PATH>
           [default: /usr/local/bin/chromedriver]
   -b, --browser-path <BROWSER_PATH>
           [default: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
@@ -35,6 +50,15 @@ Options:
 ```
 
 # code usage
+
+> notice: require rust >= v1.80
+
+add package
+
+```shell
+cargo add chromedriver-update
+```
+
 ### example with default config
 
 ```rust

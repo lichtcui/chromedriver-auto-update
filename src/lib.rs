@@ -3,12 +3,7 @@
 //! Automatically download Chromedriver when the browser/driver versions do not match.
 //!
 //! # use
-//! ```no_run
-//! cargo run
-//! ```
-//!
-//! # code use
-//! ### example with default config
+//! ### example with default config (for mac)
 //!
 //! ```no_run
 //! use chromedriver_update::ChromeDriver;
