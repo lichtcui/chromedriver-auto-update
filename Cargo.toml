@@ -1,15 +1,15 @@
 [package]
-name = "chromedriver-auto-update"
+name = "chromedriver-update"
 version = "0.1.0"
 authors = ["licht.cui <lichtcui@gmail.com>"]
 edition = "2021"
 rust-version = "1.80"
-description = "Ensure your Chromedriver remains up-to-date alongside your Chrome browser"
-readme = "README.md"
-repository = "https://github.com/lichtcui/chromedriver-auto-update"
 license = "MIT"
+description = "Ensure your Chromedriver remains up-to-date alongside your Chrome browser"
+homepage = "https://github.com/lichtcui/chromedriver-auto-update"
+repository = "https://github.com/lichtcui/chromedriver-auto-update"
+readme = "README.md"
 keywords = ["chromedriver"]
-publish = ["chromedriver-auto-update"]
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }

@@ -36,7 +36,7 @@ Options:
 ### example with default config
 
 ```rust
-use chromedriver_auto_update::ChromeDriver;
+use chromedriver_update::ChromeDriver;
 
 let mut driver = ChromeDriver::new();
 driver.init().await;
@@ -50,7 +50,7 @@ driver.try_download().await;
 ### example with custom config
 
 ```rust
-use chromedriver_auto_update::ChromeDriver;
+use chromedriver_update::ChromeDriver;
 
 let mut driver = ChromeDriver::new();
 driver

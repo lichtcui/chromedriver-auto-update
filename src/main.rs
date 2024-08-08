@@ -1,4 +1,4 @@
-use chromedriver_auto_update::ChromeDriver;
+use chromedriver_update::ChromeDriver;
 use clap::Parser;
 
 #[derive(Parser, Debug)]

@@ -11,7 +11,7 @@
 //! ### example with default config
 //!
 //! ```no_run
-//! use chromedriver_auto_update::ChromeDriver;
+//! use chromedriver_update::ChromeDriver;
 //!
 //! let mut driver = ChromeDriver::new();
 //! driver.init().await;
@@ -25,7 +25,7 @@
 //! ### example with custom config
 //!
 //! ```no_run
-//! use chromedriver_auto_update::ChromeDriver;
+//! use chromedriver_update::ChromeDriver;
 //!
 //! let mut driver = ChromeDriver::new();
 //!  driver
