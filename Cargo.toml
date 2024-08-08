@@ -1,6 +1,6 @@
 [package]
 name = "chromedriver-update"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["licht.cui <lichtcui@gmail.com>"]
 edition = "2021"
 rust-version = "1.80"
@@ -10,6 +10,10 @@ homepage = "https://github.com/lichtcui/chromedriver-auto-update"
 repository = "https://github.com/lichtcui/chromedriver-auto-update"
 readme = "README.md"
 keywords = ["chromedriver"]
+
+[lib]
+name = "chromedriver_update"
+path = "src/lib.rs"
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
