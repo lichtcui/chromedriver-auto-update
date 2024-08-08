@@ -7,15 +7,17 @@ Automatically download Chromedriver when the browser/driver versions do not matc
 ### build & run with arguments
 ```bash
 cargo build --release
-./target/release/chromedriver-auto-update --dirver-path="/usr/local/bin/chromedriver"
+./target/release/chromedriver-auto-update --dirver-path="/usr/local/bin/chromedriver" --browser-path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ```
 
 ### no build && with arguments
-```
-cargo run -- --dirver-path="/usr/local/bin/chromedriver"
+```bash
+cargo run -- --dirver-path="/usr/local/bin/chromedriver" --browser-path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ```
 
 ### arguments:
+
+these default values are only useful for mac
 ```txt
 Options:
   -d, --dirver-path <DIRVER_PATH>
