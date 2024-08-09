@@ -11,11 +11,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
       - uses: actions/checkout@v4
       # - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
       - run: ls /Users/runner/hostedtoolcache/setup-chrome/chromium/1339511/arm64/Chromium.app/Contents/MacOS/
-      - run: |
-          ${{ steps.setup-chrome.outputs.chrome-path }} --version
       - run: |
           echo "${{ steps.setup-chrome.outputs.chrome-version }}"
 
@@ -24,11 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
       - uses: actions/checkout@v4
       # - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
       - run: ls /opt/hostedtoolcache/setup-chrome/chromium/1339516/x64
-      - run: |
-          ${{ steps.setup-chrome.outputs.chrome-path }} --version
       - run: |
           echo "${{ steps.setup-chrome.outputs.chrome-version }}"
 
@@ -37,10 +37,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
       - uses: actions/checkout@v4
       # - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
       - run: ls C:\hostedtoolcache\windows\setup-chrome\chromium\1339506\x64
-      - run: |
-          ${{ steps.setup-chrome.outputs.chrome-path }} --version
       - run: |
           echo "${{ steps.setup-chrome.outputs.chrome-version }}"
