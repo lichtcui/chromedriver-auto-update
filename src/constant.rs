@@ -2,7 +2,7 @@ use std::sync::LazyLock;
 
 pub static CHROME_DRIVER_PATH: LazyLock<String> = LazyLock::new(|| {
     let prefix = match std::env::consts::OS {
-        "mac" => "/usr/local/bin",
+        "macos" => "/usr/local/bin",
         "linux" => "/usr/bin",
         "windows" => "",
         _ => "",
@@ -17,7 +17,7 @@ pub static CHROME_DRIVER_PATH: LazyLock<String> = LazyLock::new(|| {
 
 pub static CHROME_BROWSER_PATH: LazyLock<String> = LazyLock::new(|| {
     match std::env::consts::OS {
-        "mac" => "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "macos" => "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
         "linux" => "/usr/bin/google-chrome",
         "windows" => "",
         _ => "",
@@ -30,8 +30,8 @@ pub static TIMEOUT: u64 = 10000;
 
 static OS: LazyLock<String> = LazyLock::new(|| {
     match (std::env::consts::OS, std::env::consts::ARCH) {
-        ("mac", "x86_64") => "mac-x64",
-        ("mac", "aarch64") => "mac-arm64",
+        ("macos", "x86_64") => "mac-x64",
+        ("macos", "aarch64") => "mac-arm64",
         ("windows", "x86") => "win32",
         ("windows", "x86_64") => "win64",
         ("linux", "x86_64") => "linux64",
