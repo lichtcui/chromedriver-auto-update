@@ -6,8 +6,8 @@ edition = "2021"
 rust-version = "1.80"
 license = "MIT"
 description = "Ensure your Chromedriver remains up-to-date alongside your Chrome browser"
-homepage = "https://github.com/lichtcui/chromedriver-auto-update"
-repository = "https://github.com/lichtcui/chromedriver-auto-update"
+homepage = "https://github.com/lichtcui/chromedriver-update"
+repository = "https://github.com/lichtcui/chromedriver-update"
 readme = "README.md"
 keywords = ["chromedriver"]
 
