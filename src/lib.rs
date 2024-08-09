@@ -39,8 +39,6 @@
 use regex::Regex;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
-#[cfg(windows)]
-use std::os::windows::fs::PermissionsExt;
 use std::{
     fs,
     io::{Cursor, Read},
@@ -162,12 +160,6 @@ impl ChromeDriver {
                     let mut new_permissions = permissions;
                     new_permissions.set_mode(0o755);
                     fs::set_permissions(&self.path, new_permissions).unwrap();
-                }
-
-                #[cfg(windows)]
-                {
-                    let mut file = File::open(&self.path).unwrap();
-                    file.set_readonly(false).unwrap();
                 }
             }
         }
