@@ -24,6 +24,12 @@ struct Args {
 
 #[tokio::main]
 async fn main() {
+    println!(
+        "os: {}, arch: {}",
+        std::env::consts::OS,
+        std::env::consts::ARCH
+    );
+
     let args = Args::parse();
 
     let mut driver = ChromeDriver::new();
