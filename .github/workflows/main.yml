@@ -12,9 +12,11 @@ jobs:
     steps:
       - uses: browser-actions/setup-chrome@v1
       - uses: actions/checkout@v4
+      - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+      - run: ls
       - run: chrome --version
       - run: |
-          echo ${{ steps.setup-chrome.outputs.chrome-path }}
+          echo "${{ steps.setup-chrome.outputs.chrome-path }}"
 
   linux:
     name: deploy to staging
@@ -22,9 +24,11 @@ jobs:
     steps:
       - uses: browser-actions/setup-chrome@v1
       - uses: actions/checkout@v4
+      - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+      - run: ls
       - run: chrome --version
       - run: |
-          echo ${{ steps.setup-chrome.outputs.chrome-path }}
+          echo "${{ steps.setup-chrome.outputs.chrome-path }}"
 
   windows:
     name: deploy to staging
@@ -32,6 +36,8 @@ jobs:
     steps:
       - uses: browser-actions/setup-chrome@v1
       - uses: actions/checkout@v4
+      - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+      - run: ls
       - run: chrome --version
       - run: |
-          echo ${{ steps.setup-chrome.outputs.chrome-path }}
+          echo "${{ steps.setup-chrome.outputs.chrome-path }}"
