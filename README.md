@@ -65,12 +65,12 @@ cargo add chromedriver-update
 use chromedriver_update::ChromeDriver;
 
 let mut driver = ChromeDriver::new();
-driver.init().await;
+driver.init().await.unwrap();
 
 println!("driver version {}", driver.version);
 println!("browser version {}", driver.browser_version);
 
-driver.try_download().await;
+driver.try_download().await.unwrap();
 ```
 
 ### example with custom config
@@ -85,10 +85,10 @@ driver
   .set_connect_timeout(1000)
   .set_timeout(2000)
   .init()
-  .await;
+  .await.unwrap();
 
 println!("driver version {}", driver.version);
 println!("browser version {}", driver.browser_version);
 
-driver.try_download().await;
+driver.try_download().await.unwrap();
 ```

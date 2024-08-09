@@ -30,11 +30,12 @@ async fn main() {
         .set_connect_timeout(args.connect_timeout)
         .set_timeout(args.timeout)
         .init()
-        .await;
+        .await
+        .unwrap();
 
     println!("version:");
     println!("driver  {}", driver.version);
     println!("browser {}", driver.browser_version);
 
-    driver.try_download().await;
+    driver.try_download().await.unwrap();
 }

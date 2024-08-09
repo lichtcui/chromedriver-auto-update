@@ -9,12 +9,12 @@
 //! use chromedriver_update::ChromeDriver;
 //!
 //! let mut driver = ChromeDriver::new();
-//! driver.init().await;
+//! driver.init().await.unwrap();
 //!
 //! println!("driver version {}", driver.version);
 //! println!("browser version {}", driver.browser_version);
 //!
-//! driver.try_download().await;
+//! driver.try_download().await.unwrap();
 //! ```
 //!
 //! ### example with custom config
@@ -29,12 +29,12 @@
 //!    .set_connect_timeout(1000)
 //!    .set_timeout(2000)
 //!    .init()
-//!    .await;
+//!    .await.unwrap();
 //!
 //! println!("driver version {}", driver.version);
 //! println!("browser version {}", driver.browser_version);
 //!
-//! driver.try_download().await;
+//! driver.try_download().await.unwrap();
 //! ```
 use regex::Regex;
 use std::{
@@ -43,6 +43,7 @@ use std::{
     os::unix::fs::PermissionsExt,
     process::Output,
 };
+use thiserror::Error;
 use tokio::{fs::File, io::AsyncWriteExt, process::Command};
 
 pub struct ChromeDriver {
@@ -92,19 +93,23 @@ impl ChromeDriver {
     }
 
     /// setup with driver/browser version
-    pub async fn init(&mut self) {
+    pub async fn init(&mut self) -> DriverResult<()> {
         self.version = self.get_driver_version().await;
-        self.browser_version = self.get_browser_version().await;
+        self.browser_version = self.get_browser_version().await?;
+
+        Ok(())
     }
 
     /// try download chromedriver when version not matched
-    pub async fn try_download(&self) {
+    pub async fn try_download(&self) -> DriverResult<()> {
         if !self.version.eq(&self.browser_version) {
-            self.download_driver().await;
+            self.download_driver().await?;
         }
+
+        Ok(())
     }
 
-    async fn download_driver(&self) {
+    async fn download_driver(&self) -> DriverResult<()> {
         let client = reqwest::Client::builder()
             .danger_accept_invalid_certs(true)
             .connect_timeout(std::time::Duration::from_millis(self.connect_timeout))
@@ -117,18 +122,20 @@ impl ChromeDriver {
             .get(url)
             .send()
             .await
-            .expect("request timeout, you may need vpn to update chromedriver")
+            .map_err(|_| DriverError::RequestTimeout)?
             .bytes()
             .await
             .unwrap();
 
         let cursor = Cursor::new(bytes.as_ref());
         let mut archive = zip::ZipArchive::new(cursor).unwrap();
+        let mut found = false;
         for i in 0..archive.len() {
             let mut file = archive.by_index(i).unwrap();
             let file_name = file.name();
 
             if file_name.eq("chromedriver-mac-x64/chromedriver") {
+                found = true;
                 let mut output_file = File::create(&self.path).await.unwrap();
                 let mut buffer = Vec::new();
                 file.read_to_end(&mut buffer).unwrap();
@@ -139,6 +146,13 @@ impl ChromeDriver {
                 new_permissions.set_mode(0o755);
                 fs::set_permissions(&self.path, new_permissions).unwrap();
             }
+        }
+
+        match found {
+            true => Ok(()),
+            false => Err(DriverError::ResourceNotFound(
+                "chromedriver-mac-x64/chromedriver".to_string(),
+            )),
         }
     }
 
@@ -153,13 +167,13 @@ impl ChromeDriver {
         }
     }
 
-    async fn get_browser_version(&self) -> String {
+    async fn get_browser_version(&self) -> DriverResult<String> {
         let output = Command::new(self.browser_path.clone())
             .arg("--version")
             .output()
             .await
-            .expect("cannot find chrome");
-        get_version_from_output(output)
+            .map_err(|_| DriverError::BrowserNotFound(self.browser_path.clone()))?;
+        Ok(get_version_from_output(output))
     }
 }
 
@@ -173,3 +187,15 @@ fn get_version_from_output(output: Output) -> String {
         .as_str()
         .to_string()
 }
+
+#[derive(Error, Debug)]
+pub enum DriverError {
+    #[error("browser not found `{0}`")]
+    BrowserNotFound(String),
+    #[error("resource not found `{0}`")]
+    ResourceNotFound(String),
+    #[error("download request timeout, please increase connect_timeout/timeout or use vpn")]
+    RequestTimeout,
+}
+
+type DriverResult<T> = Result<T, DriverError>;
