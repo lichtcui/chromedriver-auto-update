@@ -72,13 +72,17 @@ impl ChromeDriver {
         }
     }
 
-    /// change chromedriver path, default: `/usr/local/bin/chromedriver`
+    /// change chromedriver path default:
+    /// mac:    `/usr/local/bin/chromedriver`
+    /// linux:  `/usr/bin/chromedriver`
     pub fn set_driver_path(&mut self, path: &str) -> &mut Self {
         self.path = path.to_string();
         self
     }
 
-    /// change chrome browser path, default: `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`
+    /// change chrome browser path, default:
+    /// mac:    `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`
+    /// linux:  `/usr/bin/google-chrome`
     pub fn set_browser_path(&mut self, path: &str) -> &mut Self {
         self.browser_path = path.to_string();
         self

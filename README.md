@@ -1,5 +1,5 @@
 # chromedriver
-
+> mac & linux only
 Automatically download Chromedriver when the browser/driver versions do not match.
 
 # usage
@@ -12,46 +12,31 @@ cargo install chromedriver-update
 # use default values
 chromedriver-update
 
-# or
+# or use custom values
 chromedriver-update --driver-path="/driver/path" --browser-path="/browser/path"
-```
-
-### build source code & run with arguments
-
-```bash
-cargo build --release
-./target/release/chromedriver-auto-update --driver-path="/driver/path" --browser-path="/browser/path"
-```
-
-### run source code && with arguments
-
-```bash
-cargo run -- --driver-path="/driver/path" --browser-path="/browser/path"
 ```
 
 ### arguments:
 
-these default values are only useful for mac
+use `chromedriver-update --help` to check details (different default value for different os)
 
-```txt
-Options:
-  -d, --driver-path <driver_PATH>
-          [default: /usr/local/bin/chromedriver]
-  -b, --browser-path <BROWSER_PATH>
-          [default: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
-  -c, --connect-timeout <CONNECT_TIMEOUT>
-          [default: 5000]
-  -t, --timeout <TIMEOUT>
-          [default: 10000]
-  -h, --help
-          Print help
-  -V, --version
-          Print version
-```
+#### --driver-path
+|os|default_value|
+|-|-|
+|mac|/usr/local/bin/chromedriver|
+|linux|/usr/bin/chromedriver|
+|windows||
+
+#### --browser-path
+|os|default_value|
+|-|-|
+|mac|/Applications/Google Chrome.app/Contents/MacOS/Google Chrome|
+|linux|/usr/bin/google-chrome|
+|windows||
 
 # code usage
 
-> notice: require rust >= v1.80
+> require rust >= v1.80
 
 add package
 
@@ -85,7 +70,8 @@ driver
   .set_connect_timeout(1000)
   .set_timeout(2000)
   .init()
-  .await.unwrap();
+  .await
+  .unwrap();
 
 println!("driver version {}", driver.version);
 println!("browser version {}", driver.browser_version);
