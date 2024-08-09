@@ -1,0 +1,37 @@
+name: Test workflow
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  mac:
+    name: deploy to staging
+    runs-on: macos-latest
+    steps:
+      - uses: browser-actions/setup-chrome@v1
+      - uses: actions/checkout@v4
+      - run: chrome --version
+      - run: |
+          echo ${{ steps.setup-chrome.outputs.chrome-path }}
+
+  linux:
+    name: deploy to staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: browser-actions/setup-chrome@v1
+      - uses: actions/checkout@v4
+      - run: chrome --version
+      - run: |
+          echo ${{ steps.setup-chrome.outputs.chrome-path }}
+
+  windows:
+    name: deploy to staging
+    runs-on: windows-latest
+    steps:
+      - uses: browser-actions/setup-chrome@v1
+      - uses: actions/checkout@v4
+      - run: chrome --version
+      - run: |
+          echo ${{ steps.setup-chrome.outputs.chrome-path }}

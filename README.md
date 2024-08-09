@@ -21,6 +21,7 @@ chromedriver-update --driver-path="/driver/path" --browser-path="/browser/path"
 use `chromedriver-update --help` to check details (different default value for different os)
 
 #### --driver-path
+
 |os|default_value|
 |-|-|
 |mac|/usr/local/bin/chromedriver|
@@ -28,6 +29,7 @@ use `chromedriver-update --help` to check details (different default value for d
 |windows||
 
 #### --browser-path
+
 |os|default_value|
 |-|-|
 |mac|/Applications/Google Chrome.app/Contents/MacOS/Google Chrome|
