@@ -46,7 +46,7 @@ use std::{
 use thiserror::Error;
 use tokio::{fs::File, io::AsyncWriteExt, process::Command};
 
-mod constant;
+pub mod constant;
 use constant::{
     CHROME_BROWSER_PATH, CHROME_DRIVER_PATH, CONNECT_TIMEOUT, DRIVER_FILE, TIMEOUT, ZIP_PATH,
 };

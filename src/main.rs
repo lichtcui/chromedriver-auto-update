@@ -1,21 +1,24 @@
-use chromedriver_update::ChromeDriver;
+use chromedriver_update::{
+    constant::{CHROME_BROWSER_PATH, CHROME_DRIVER_PATH, CONNECT_TIMEOUT, TIMEOUT},
+    ChromeDriver,
+};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    #[arg(short, long, default_value = "/usr/local/bin/chromedriver")]
+    #[arg(short, long, default_value = CHROME_DRIVER_PATH.as_str())]
     driver_path: String,
     #[arg(
         short,
         long,
-        default_value = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        default_value = CHROME_BROWSER_PATH.as_str()
     )]
     browser_path: String,
 
-    #[arg(short, long, default_value_t = 5000)]
+    #[arg(short, long, default_value_t = CONNECT_TIMEOUT)]
     connect_timeout: u64,
-    #[arg(short, long, default_value_t = 10000)]
+    #[arg(short, long, default_value_t = TIMEOUT)]
     timeout: u64,
 }
 
