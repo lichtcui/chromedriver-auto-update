@@ -37,10 +37,13 @@
 //! driver.try_download().await.unwrap();
 //! ```
 use regex::Regex;
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt;
+#[cfg(windows)]
+use std::os::windows::fs::PermissionsExt;
 use std::{
     fs,
     io::{Cursor, Read},
-    os::unix::fs::PermissionsExt,
     process::Output,
 };
 use thiserror::Error;
@@ -153,10 +156,19 @@ impl ChromeDriver {
                 file.read_to_end(&mut buffer).unwrap();
                 output_file.write_all(&buffer).await.unwrap();
 
-                let permissions = fs::metadata(&self.path).unwrap().permissions();
-                let mut new_permissions = permissions.clone();
-                new_permissions.set_mode(0o755);
-                fs::set_permissions(&self.path, new_permissions).unwrap();
+                #[cfg(unix)]
+                {
+                    let permissions = fs::metadata(&self.path).unwrap().permissions();
+                    let mut new_permissions = permissions;
+                    new_permissions.set_mode(0o755);
+                    fs::set_permissions(&self.path, new_permissions).unwrap();
+                }
+
+                #[cfg(windows)]
+                {
+                    let mut file = File::open(&self.path).unwrap();
+                    file.set_readonly(false).unwrap();
+                }
             }
         }
 

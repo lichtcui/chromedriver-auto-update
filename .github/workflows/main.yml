@@ -7,7 +7,7 @@ on:
 
 jobs:
   mac:
-    name: deploy to staging
+    name: try build & run
     runs-on: macos-latest
     steps:
       - uses: browser-actions/setup-chrome@v1
@@ -21,7 +21,7 @@ jobs:
       - run: ls /Users/runner/hostedtoolcache/setup-chrome/chromium/120.0.6099.109/arm64
 
   linux:
-    name: deploy to staging
+    name: try build & run
     runs-on: ubuntu-latest
     steps:
       - uses: browser-actions/setup-chrome@v1
@@ -35,7 +35,7 @@ jobs:
       - run: ls /opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.109/x64
 
   windows:
-    name: deploy to staging
+    name: try build & run
     runs-on: windows-latest
     steps:
       - uses: browser-actions/setup-chrome@v1
