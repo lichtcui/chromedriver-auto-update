@@ -14,7 +14,10 @@ jobs:
         with:
           chrome-version: 120
       - uses: actions/checkout@v4
-      # - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+      - name: setup rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: Build
+        run: cargo build --release
       - run: ls /Users/runner/hostedtoolcache/setup-chrome/chromium/120.0.6099.109/arm64
 
   linux:
@@ -25,7 +28,10 @@ jobs:
         with:
           chrome-version: 120
       - uses: actions/checkout@v4
-      # - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+      - name: setup rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: Build
+        run: cargo build --release
       - run: ls /opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.109/x64
 
   windows:
@@ -36,5 +42,8 @@ jobs:
         with:
           chrome-version: 120
       - uses: actions/checkout@v4
-      # - run: curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+      - name: setup rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: Build
+        run: cargo build --release
       - run: ls C:\hostedtoolcache\windows\setup-chrome\chromium\120.0.6099.109\x64
