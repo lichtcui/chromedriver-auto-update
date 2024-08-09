@@ -46,6 +46,11 @@ use std::{
 use thiserror::Error;
 use tokio::{fs::File, io::AsyncWriteExt, process::Command};
 
+mod constant;
+use constant::{
+    CHROME_BROWSER_PATH, CHROME_DRIVER_PATH, CONNECT_TIMEOUT, DRIVER_FILE, TIMEOUT, ZIP_PATH,
+};
+
 pub struct ChromeDriver {
     pub version: String,
     pub browser_version: String,
@@ -59,12 +64,11 @@ impl ChromeDriver {
     pub fn new() -> Self {
         Self {
             version: String::new(),
-            path: "/usr/local/bin/chromedriver".to_string(),
+            path: CHROME_DRIVER_PATH.to_string(),
             browser_version: String::new(),
-            browser_path: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-                .to_string(),
-            connect_timeout: 5000,
-            timeout: 10000,
+            browser_path: CHROME_BROWSER_PATH.to_string(),
+            connect_timeout: CONNECT_TIMEOUT,
+            timeout: TIMEOUT,
         }
     }
 
@@ -117,7 +121,11 @@ impl ChromeDriver {
             .build()
             .unwrap();
 
-        let url = format!("https://storage.googleapis.com/chrome-for-testing-public/{}/mac-x64/chromedriver-mac-x64.zip", self.browser_version);
+        let url = format!(
+            "https://storage.googleapis.com/chrome-for-testing-public/{}/{}",
+            self.browser_version,
+            ZIP_PATH.as_str()
+        );
         let bytes = client
             .get(url)
             .send()
@@ -134,7 +142,7 @@ impl ChromeDriver {
             let mut file = archive.by_index(i).unwrap();
             let file_name = file.name();
 
-            if file_name.eq("chromedriver-mac-x64/chromedriver") {
+            if file_name.eq(DRIVER_FILE.as_str()) {
                 found = true;
                 let mut output_file = File::create(&self.path).await.unwrap();
                 let mut buffer = Vec::new();
@@ -150,9 +158,7 @@ impl ChromeDriver {
 
         match found {
             true => Ok(()),
-            false => Err(DriverError::ResourceNotFound(
-                "chromedriver-mac-x64/chromedriver".to_string(),
-            )),
+            false => Err(DriverError::ResourceNotFound(DRIVER_FILE.to_string())),
         }
     }
 
