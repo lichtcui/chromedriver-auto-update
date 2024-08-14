@@ -1,6 +1,6 @@
 # chromedriver
-> mac & linux only
-Automatically download Chromedriver when the browser/driver versions do not match.
+
+Automatically download Chromedriver when browser/driver versions do not match.
 
 # usage
 
@@ -9,30 +9,15 @@ Automatically download Chromedriver when the browser/driver versions do not matc
 ```bash
 cargo install chromedriver-update
 
-# use default values
-chromedriver-update
+# mac
+chromedriver-update --browser-path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --driver-path="/usr/local/bin/chromedriver"
 
-# or use custom values
-chromedriver-update --driver-path="/driver/path" --browser-path="/browser/path"
+# linux
+chromedriver-update --browser-path="/usr/bin/google-chrome" --driver-path="/usr/bin/chromedriver"
+
+# windows (only tested in github workflow)
+chromedriver-update --browser-path="C:\setup-chrome\chromium\120.0.6099.109\x64\chrome.exe" --driver-path="C:\setup-chrome\chromedriver.exe"
 ```
-
-### arguments:
-
-use `chromedriver-update --help` to check details (different default value for different os)
-
-#### --driver-path
-|os|default_value|
-|-|-|
-|mac|/usr/local/bin/chromedriver|
-|linux|/usr/bin/chromedriver|
-|windows||
-
-#### --browser-path
-|os|default_value|
-|-|-|
-|mac|/Applications/Google Chrome.app/Contents/MacOS/Google Chrome|
-|linux|/usr/bin/google-chrome|
-|windows||
 
 # code usage
 
