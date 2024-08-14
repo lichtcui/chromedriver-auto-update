@@ -38,9 +38,7 @@
 //! ```
 use regex::Regex;
 use std::{
-    fs,
     io::{Cursor, Read},
-    os::unix::fs::PermissionsExt,
     process::Output,
 };
 use thiserror::Error;
@@ -145,7 +143,6 @@ impl ChromeDriver {
         for i in 0..archive.len() {
             let mut file = archive.by_index(i).unwrap();
             let file_name = file.name();
-
             if file_name.eq(DRIVER_FILE.as_str()) {
                 found = true;
                 let mut output_file = File::create(&self.path).await.unwrap();
@@ -153,10 +150,14 @@ impl ChromeDriver {
                 file.read_to_end(&mut buffer).unwrap();
                 output_file.write_all(&buffer).await.unwrap();
 
-                let permissions = fs::metadata(&self.path).unwrap().permissions();
-                let mut new_permissions = permissions.clone();
-                new_permissions.set_mode(0o755);
-                fs::set_permissions(&self.path, new_permissions).unwrap();
+                #[cfg(unix)]
+                {
+                    use std::{fs, os::unix::fs::PermissionsExt};
+                    let permissions = fs::metadata(&self.path).unwrap().permissions();
+                    let mut new_permissions = permissions;
+                    new_permissions.set_mode(0o755);
+                    fs::set_permissions(&self.path, new_permissions).unwrap();
+                }
             }
         }
 
@@ -178,12 +179,42 @@ impl ChromeDriver {
     }
 
     async fn get_browser_version(&self) -> DriverResult<String> {
-        let output = Command::new(self.browser_path.clone())
-            .arg("--version")
-            .output()
-            .await
-            .map_err(|_| DriverError::BrowserNotFound(self.browser_path.clone()))?;
-        Ok(get_version_from_output(output))
+        let path = self.browser_path.clone();
+
+        #[cfg(unix)]
+        {
+            let output = Command::new(&path)
+                .arg("--version")
+                .output()
+                .await
+                .map_err(|_| DriverError::BrowserNotFound(path))?;
+            Ok(get_version_from_output(output))
+        }
+
+        #[cfg(windows)]
+        {
+            use std::process::Stdio;
+            let cmd = format!(
+                r#"(Get-Item (Get-Command '{}').Source).VersionInfo.ProductVersion"#,
+                &path
+            );
+
+            let output = Command::new("powershell")
+                .arg("-Command")
+                .arg(&cmd)
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped())
+                .output()
+                .await
+                .map_err(|_| DriverError::BrowserNotFound(path.clone()))?;
+
+            if !output.status.success() {
+                // let stderr = String::from_utf8_lossy(&output.stderr).into_owned();
+                Err(DriverError::BrowserNotFound(path))
+            } else {
+                Ok(get_version_from_output(output))
+            }
+        }
     }
 }
 

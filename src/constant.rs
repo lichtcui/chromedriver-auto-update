@@ -45,9 +45,19 @@ static DRIVERNAME: &str = "chromedriver";
 // chromedriver-mac-x64
 static FILENAME: LazyLock<String> = LazyLock::new(|| format!("{}-{}", DRIVERNAME, OS.as_str()));
 
-// chromedriver-mac-x64/chromedriver
-pub static DRIVER_FILE: LazyLock<String> =
-    LazyLock::new(|| format!("{}/{}", FILENAME.as_str(), DRIVERNAME));
+pub static DRIVER_FILE: LazyLock<String> = LazyLock::new(|| {
+    // chromedriver-mac-x64/chromedriver
+    #[cfg(unix)]
+    {
+        return format!("{}/{}", FILENAME.as_str(), DRIVERNAME);
+    }
+
+    // chromedriver-win64/chromedriver.exe
+    #[cfg(windows)]
+    {
+        return format!("{}/{}.exe", FILENAME.as_str(), DRIVERNAME);
+    }
+});
 
 // mac-x64/chromedriver-mac-x64.zip
 pub static ZIP_PATH: LazyLock<String> =
