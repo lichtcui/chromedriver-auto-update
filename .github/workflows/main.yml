@@ -1,0 +1,89 @@
+name: os check
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  mac-apple:
+    name: try mac-arm
+    runs-on: macos-latest
+    steps:
+      - name: setup chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
+      - name: setup rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build
+        run: cargo build --release
+      - name: use
+        run: ./target/release/chromedriver-update --browser-path="/Users/runner/hostedtoolcache/setup-chrome/chromium/120.0.6099.109/arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing" --driver-path="/Users/runner/chromedriver"
+      - name: check result
+        run: /Users/runner/chromedriver --version
+      # ChromeDriver 120.0.6099.109 (3419140ab665596f21b385ce136419fde0924272-refs/branch-heads/6099@{#1483})
+
+  mac-intel:
+    name: try mac-intel
+    runs-on: macos-13
+    steps:
+      - name: setup chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
+      - name: setup rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build
+        run: cargo build --release
+      - name: use
+        run: ./target/release/chromedriver-update --browser-path="/Users/runner/hostedtoolcache/setup-chrome/chromium/120.0.6099.109/x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing" --driver-path="/Users/runner/chromedriver"
+      - name: check result
+        run: /Users/runner/chromedriver --version
+      # ChromeDriver 120.0.6099.109 (3419140ab665596f21b385ce136419fde0924272-refs/branch-heads/6099@{#1483})
+
+  linux:
+    name: try linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
+      - name: setup rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build
+        run: cargo build --release
+      - name: use
+        run: ./target/release/chromedriver-update --browser-path="/opt/hostedtoolcache/setup-chrome/chromium/120.0.6099.109/x64/chrome" --driver-path="/opt/hostedtoolcache/chromedriver"
+      - name: check result
+        run: /opt/hostedtoolcache/chromedriver --version
+      # ChromeDriver 120.0.6099.109 (3419140ab665596f21b385ce136419fde0924272-refs/branch-heads/6099@{#1483})
+
+  windows:
+    name: try windows
+    runs-on: windows-latest
+    steps:
+      - name: setup chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 120
+      - name: setup rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: build
+        run: cargo build --release
+      - name: use
+        run: |
+          .\target\release\chromedriver-update.exe --browser-path="C:\hostedtoolcache\windows\setup-chrome\chromium\120.0.6099.109\x64\chrome.exe" --driver-path="C:\hostedtoolcache\windows\setup-chrome\chromedriver.exe"
+      - name: check result
+        run: |
+          C:\hostedtoolcache\windows\setup-chrome\chromedriver.exe --version
+      # ChromeDriver 120.0.6099.109 (3419140ab665596f21b385ce136419fde0924272-refs/branch-heads/6099@{#1483})
