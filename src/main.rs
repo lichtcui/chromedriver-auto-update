@@ -42,9 +42,11 @@ async fn main() {
         .await
         .unwrap();
 
-    println!("version:");
-    println!("driver  {}", driver.version);
-    println!("browser {}", driver.browser_version);
+    println!("driver version {}", driver.version);
+    println!("browser version {}", driver.browser_version);
 
-    driver.try_download().await.unwrap();
+    match driver.try_download().await {
+        Ok(_) => println!("Download driver successful"),
+        Err(err) => eprintln!("Download driver failed, {}", err),
+    }
 }
