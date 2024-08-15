@@ -8,8 +8,7 @@ async fn main() {
     println!("driver version {}", driver.version);
     println!("browser version {}", driver.browser_version);
 
-    match driver.try_download().await {
-        Ok(_) => println!("success download driver"),
-        Err(err) => eprintln!("failed download driver {}", err),
+    if driver.need_download() {
+        driver.try_download().await.unwrap();
     }
 }

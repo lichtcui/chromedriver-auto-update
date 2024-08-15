@@ -14,7 +14,9 @@
 //! println!("driver version {}", driver.version);
 //! println!("browser version {}", driver.browser_version);
 //!
-//! driver.try_download().await.unwrap();
+//! if driver.need_download() {
+//!     driver.try_download().await.unwrap();
+//! }
 //! ```
 //!
 //! ### example with custom config
@@ -34,7 +36,9 @@
 //! println!("driver version {}", driver.version);
 //! println!("browser version {}", driver.browser_version);
 //!
-//! driver.try_download().await.unwrap();
+//! if driver.need_download() {
+//!     driver.try_download().await.unwrap();
+//! }
 //! ```
 use regex::Regex;
 use std::{
@@ -106,13 +110,16 @@ impl ChromeDriver {
         Ok(())
     }
 
+    pub fn need_download(&self) -> bool {
+        !self.version.eq(&self.browser_version)
+    }
+
     /// try download chromedriver when version not matched
     pub async fn try_download(&self) -> DriverResult<()> {
-        if !self.version.eq(&self.browser_version) {
-            self.download_driver().await?;
+        match self.download_driver().await {
+            Ok(_) => return Ok(()),
+            Err(err) => return Err(err),
         }
-
-        Ok(())
     }
 
     async fn download_driver(&self) -> DriverResult<()> {
