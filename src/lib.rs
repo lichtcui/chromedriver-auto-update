@@ -1,45 +1,54 @@
-//! # chromedriver
-//!
-//! Automatically download Chromedriver when the browser/driver versions do not match.
-//!
-//! # use
-//! ### example with default config (for mac)
-//!
-//! ```no_run
-//! use chromedriver_update::ChromeDriver;
-//!
-//! let mut driver = ChromeDriver::new();
-//! driver.init().await.unwrap();
-//!
-//! println!("driver version {}", driver.version);
-//! println!("browser version {}", driver.browser_version);
-//!
-//! if driver.need_download() {
-//!     driver.try_download().await.unwrap();
-//! }
-//! ```
-//!
-//! ### example with custom config
-//!
-//! ```no_run
-//! use chromedriver_update::ChromeDriver;
-//!
-//! let mut driver = ChromeDriver::new();
-//!  driver
-//!    .set_driver_path("/other/path")
-//!    .set_browser_path("/other/path")
-//!    .set_connect_timeout(1000)
-//!    .set_timeout(2000)
-//!    .init()
-//!    .await.unwrap();
-//!
-//! println!("driver version {}", driver.version);
-//! println!("browser version {}", driver.browser_version);
-//!
-//! if driver.need_download() {
-//!     driver.try_download().await.unwrap();
-//! }
-//! ```
+/*!
+Automatically download Chromedriver when the browser/driver versions do not match.
+
+### Use default values
+```no_run
+use chromedriver_update::ChromeDriver;
+
+#[tokio::main]
+async fn main() {
+    let mut driver = ChromeDriver::new();
+    driver.init().await.unwrap();
+    if driver.need_download() {
+        driver.try_download().await.unwrap();
+    }
+}
+```
+
+### Use custom values
+
+```no_run
+use chromedriver_update::ChromeDriver;
+
+#[tokio::main]
+async fn main() {
+    let mut driver = ChromeDriver::new();
+    driver
+        .set_driver_path("/usr/local/bin/chromedriver")
+        .set_browser_path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+        .set_connect_timeout(2000)
+        .set_timeout(5000)
+        .init()
+        .await
+        .unwrap();
+
+    println!("driver version {}", driver.version);
+    println!("browser version {}", driver.browser_version);
+
+    if !driver.need_download() {
+        println!("no need to update driver");
+        return;
+    }
+
+    println!("updating driver ...");
+
+    match driver.try_download().await {
+        Ok(_) => println!("Download driver successful"),
+        Err(err) => eprintln!("Download driver failed, {}", err),
+    }
+}
+```
+*/
 use regex::Regex;
 use std::{
     io::{Cursor, Read},
@@ -54,7 +63,9 @@ use constant::{
 };
 
 pub struct ChromeDriver {
+    /// Chrome driver version
     pub version: String,
+    /// Chrome browser version
     pub browser_version: String,
     path: String,
     browser_path: String,
@@ -63,6 +74,7 @@ pub struct ChromeDriver {
 }
 
 impl ChromeDriver {
+    /// Create driver
     pub fn new() -> Self {
         Self {
             version: String::new(),
@@ -74,35 +86,37 @@ impl ChromeDriver {
         }
     }
 
-    /// change chromedriver path default:
-    /// mac:    `/usr/local/bin/chromedriver`
-    /// linux:  `/usr/bin/chromedriver`
+    /// Update chromedriver path. Default:
+    /// - mac:    `/usr/local/bin/chromedriver`
+    /// - linux:  `/usr/bin/chromedriver`
+    /// - windows:  ``
     pub fn set_driver_path(&mut self, path: &str) -> &mut Self {
         self.path = path.to_string();
         self
     }
 
-    /// change chrome browser path, default:
-    /// mac:    `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`
-    /// linux:  `/usr/bin/google-chrome`
+    /// Update chrome browser path. Default:
+    /// - mac:    `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`
+    /// - linux:  `/usr/bin/google-chrome`
+    /// - windows:  ``
     pub fn set_browser_path(&mut self, path: &str) -> &mut Self {
         self.browser_path = path.to_string();
         self
     }
 
-    /// change connect_timeout(ms) for download request, default: `5000`
+    /// Update connect_timeout (ms) for download requests. Default: 5000.
     pub fn set_connect_timeout(&mut self, timeout: u64) -> &mut Self {
         self.connect_timeout = timeout;
         self
     }
 
-    /// change timeout(ms) for download request, default: `10000`
+    /// Update timeout (ms) for download requests. Default: 5000.
     pub fn set_timeout(&mut self, timeout: u64) -> &mut Self {
         self.timeout = timeout;
         self
     }
 
-    /// setup with driver/browser version
+    /// Setup driver & browser version
     pub async fn init(&mut self) -> DriverResult<()> {
         self.version = self.get_driver_version().await;
         self.browser_version = self.get_browser_version().await?;
@@ -110,11 +124,12 @@ impl ChromeDriver {
         Ok(())
     }
 
+    /// Compare driver & browser version
     pub fn need_download(&self) -> bool {
         !self.version.eq(&self.browser_version)
     }
 
-    /// try download chromedriver when version not matched
+    /// Download Chromedriver
     pub async fn try_download(&self) -> DriverResult<()> {
         let client = reqwest::Client::builder()
             .danger_accept_invalid_certs(true)
