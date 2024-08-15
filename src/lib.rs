@@ -116,13 +116,6 @@ impl ChromeDriver {
 
     /// try download chromedriver when version not matched
     pub async fn try_download(&self) -> DriverResult<()> {
-        match self.download_driver().await {
-            Ok(_) => return Ok(()),
-            Err(err) => return Err(err),
-        }
-    }
-
-    async fn download_driver(&self) -> DriverResult<()> {
         let client = reqwest::Client::builder()
             .danger_accept_invalid_certs(true)
             .connect_timeout(std::time::Duration::from_millis(self.connect_timeout))
