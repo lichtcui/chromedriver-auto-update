@@ -6,6 +6,11 @@ Automatically download Chromedriver when browser/driver versions do not match.
 
 ### install & run
 
+|args|description|
+|-|-|
+|--browser-path|chrome browser path|
+|--driver-path|chrome driver path, create when file not exist|
+
 ```bash
 cargo install chromedriver-update
 
