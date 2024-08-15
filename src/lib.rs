@@ -136,7 +136,7 @@ impl ChromeDriver {
             .connect_timeout(std::time::Duration::from_millis(self.connect_timeout))
             .timeout(std::time::Duration::from_millis(self.timeout))
             .build()
-            .unwrap();
+            .map_err(|_| DriverError::RequestInvalid)?;
 
         let url = format!(
             "https://storage.googleapis.com/chrome-for-testing-public/{}/{}",
@@ -150,36 +150,39 @@ impl ChromeDriver {
             .map_err(|_| DriverError::RequestTimeout)?
             .bytes()
             .await
-            .unwrap();
+            .map_err(|_| DriverError::RequestInvalid)?;
 
         let cursor = Cursor::new(bytes.as_ref());
-        let mut archive = zip::ZipArchive::new(cursor).unwrap();
-        let mut found = false;
+        let mut archive = zip::ZipArchive::new(cursor)
+            .map_err(|_| DriverError::ResourceInvalid(ZIP_PATH.to_string()))?;
+
         for i in 0..archive.len() {
             let mut file = archive.by_index(i).unwrap();
-            let file_name = file.name();
-            if file_name.eq(DRIVER_FILE.as_str()) {
-                found = true;
-                let mut output_file = File::create(&self.path).await.unwrap();
+            if file.name().eq(DRIVER_FILE.as_str()) {
+                let mut output_file = File::create(&self.path)
+                    .await
+                    .map_err(|_| DriverError::ResourceInvalid(self.path.clone()))?;
                 let mut buffer = Vec::new();
-                file.read_to_end(&mut buffer).unwrap();
-                output_file.write_all(&buffer).await.unwrap();
+                file.read_to_end(&mut buffer)
+                    .map_err(|_| DriverError::ResourceInvalid(self.path.clone()))?;
+                output_file
+                    .write_all(&buffer)
+                    .await
+                    .map_err(|_| DriverError::ResourceInvalid(self.path.clone()))?;
 
                 #[cfg(unix)]
                 {
                     use std::{fs, os::unix::fs::PermissionsExt};
-                    let permissions = fs::metadata(&self.path).unwrap().permissions();
-                    let mut new_permissions = permissions;
-                    new_permissions.set_mode(0o755);
-                    fs::set_permissions(&self.path, new_permissions).unwrap();
+                    let mut permissions = fs::metadata(&self.path).unwrap().permissions();
+                    permissions.set_mode(0o755);
+                    fs::set_permissions(&self.path, permissions).unwrap();
                 }
+
+                return Ok(());
             }
         }
 
-        match found {
-            true => Ok(()),
-            false => Err(DriverError::ResourceNotFound(DRIVER_FILE.to_string())),
-        }
+        Err(DriverError::ResourceNotFound(DRIVER_FILE.to_string()))
     }
 
     async fn get_driver_version(&self) -> String {
@@ -234,7 +237,7 @@ impl ChromeDriver {
 }
 
 fn get_version_from_output(output: Output) -> String {
-    let text = String::from_utf8(output.stdout).unwrap();
+    let text = String::from_utf8_lossy(&output.stdout).into_owned();
     let re = Regex::new(r"\d+\.\d+\.\d+\.\d+").unwrap();
     re.captures(&text)
         .unwrap()
@@ -250,8 +253,12 @@ pub enum DriverError {
     BrowserNotFound(String),
     #[error("resource not found `{0}`")]
     ResourceNotFound(String),
+    #[error("resource invalid `{0}`")]
+    ResourceInvalid(String),
     #[error("download request timeout, please increase connect_timeout/timeout or use vpn")]
     RequestTimeout,
+    #[error("failed to send request")]
+    RequestInvalid,
 }
 
 type DriverResult<T> = Result<T, DriverError>;
