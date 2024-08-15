@@ -1,4 +1,4 @@
-name: os check
+name: Feasibility
 
 on:
   push:
@@ -10,7 +10,7 @@ env:
 
 jobs:
   mac-apple:
-    name: try mac-arm
+    name: mac-arm
     runs-on: macos-latest
     steps:
       - name: setup chrome
@@ -28,9 +28,9 @@ jobs:
       - name: check chromedriver version
         run: |
           CHROMEDRIVER_VERSION=$(/Users/runner/hostedtoolcache/chromedriver --version)
-          echo "Expected: $EXPECTED_VERSION"
+          echo "Expected: ${{ env.EXPECTED_VERSION }}"
           echo "Got: $CHROMEDRIVER_VERSION"
-          if [ "$CHROMEDRIVER_VERSION" != "$EXPECTED_VERSION" ]; then
+          if [ "$CHROMEDRIVER_VERSION" != "${{ env.EXPECTED_VERSION }}" ]; then
             echo "Chromedriver version is not as expected."
             exit 1
           else
@@ -39,7 +39,7 @@ jobs:
           fi
 
   mac-intel:
-    name: try mac-intel
+    name: mac-intel
     runs-on: macos-13
     steps:
       - name: setup chrome
@@ -57,9 +57,9 @@ jobs:
       - name: check chromedriver version
         run: |
           CHROMEDRIVER_VERSION=$(/Users/runner/hostedtoolcache/chromedriver --version)
-          echo "Expected: $EXPECTED_VERSION"
+          echo "Expected: ${{ env.EXPECTED_VERSION }}"
           echo "Got: $CHROMEDRIVER_VERSION"
-          if [ "$CHROMEDRIVER_VERSION" != "$EXPECTED_VERSION" ]; then
+          if [ "$CHROMEDRIVER_VERSION" != "${{ env.EXPECTED_VERSION }}" ]; then
             echo "Chromedriver version is not as expected."
             exit 1
           else
@@ -68,7 +68,7 @@ jobs:
           fi
 
   linux-x86:
-    name: try linux
+    name: linux
     runs-on: ubuntu-latest
     steps:
       - name: setup chrome
@@ -86,9 +86,9 @@ jobs:
       - name: check chromedriver version
         run: |
           CHROMEDRIVER_VERSION=$(/opt/chromedriver --version)
-          echo "Expected: $EXPECTED_VERSION"
+          echo "Expected: ${{ env.EXPECTED_VERSION }}"
           echo "Got: $CHROMEDRIVER_VERSION"
-          if [ "$CHROMEDRIVER_VERSION" != "$EXPECTED_VERSION" ]; then
+          if [ "$CHROMEDRIVER_VERSION" != "${{ env.EXPECTED_VERSION }}" ]; then
             echo "Chromedriver version is not as expected."
             exit 1
           else
@@ -97,7 +97,7 @@ jobs:
           fi
 
   windows:
-    name: try windows
+    name: windows
     runs-on: windows-latest
     steps:
       - name: setup chrome
@@ -115,14 +115,12 @@ jobs:
           .\target\release\chromedriver-update.exe --browser-path="C:\hostedtoolcache\windows\setup-chrome\chromium\120.0.6099.109\x64\chrome.exe" --driver-path="C:\chromedriver.exe"
       - name: check chromedriver version
         shell: pwsh
-        env:
-          EXPECTED_VERSION: ChromeDriver 120.0.6099.109 (3419140ab665596f21b385ce136419fde0924272-refs/branch-heads/6099@{#1483})
         run: |
           $CHROMEDRIVER_PATH = "C:\chromedriver.exe"
           $CHROMEDRIVER_VERSION = & $CHROMEDRIVER_PATH --version
-          Write-Host "Expected: $EXPECTED_VERSION"
+          Write-Host "Expected: ${{ env.EXPECTED_VERSION }}"
           Write-Host "Got: $CHROMEDRIVER_VERSION"
-          if ($CHROMEDRIVER_VERSION -ne $EXPECTED_VERSION) {
+          if ($CHROMEDRIVER_VERSION -ne "${{ env.EXPECTED_VERSION }}") {
             Write-Host "Chromedriver version is not as expected."
             Exit 1
           } else {
