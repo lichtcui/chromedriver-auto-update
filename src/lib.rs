@@ -262,3 +262,60 @@ pub enum DriverError {
 }
 
 type DriverResult<T> = Result<T, DriverError>;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new() {
+        let driver = ChromeDriver::new();
+        assert_eq!(driver.version, "");
+        assert_eq!(driver.browser_version, "");
+        assert_eq!(driver.path, CHROME_DRIVER_PATH.as_str());
+        assert_eq!(driver.browser_path, CHROME_BROWSER_PATH.as_str());
+        assert_eq!(driver.connect_timeout, CONNECT_TIMEOUT);
+        assert_eq!(driver.timeout, TIMEOUT);
+    }
+
+    #[test]
+    fn test_set_driver_path() {
+        let mut driver = ChromeDriver::new();
+        let new_path = "/new/path/to/chromedriver";
+        driver.set_driver_path(new_path);
+        assert_eq!(driver.path, new_path);
+    }
+
+    #[test]
+    fn test_set_browser_path() {
+        let mut driver = ChromeDriver::new();
+        let new_browser_path = "/new/path/to/chrome";
+        driver.set_browser_path(new_browser_path);
+        assert_eq!(driver.browser_path, new_browser_path);
+    }
+
+    #[test]
+    fn test_set_connect_timeout() {
+        let mut driver = ChromeDriver::new();
+        driver.set_connect_timeout(10000);
+        assert_eq!(driver.connect_timeout, 10000);
+    }
+
+    #[test]
+    fn test_set_timeout() {
+        let mut driver = ChromeDriver::new();
+        driver.set_timeout(10000);
+        assert_eq!(driver.timeout, 10000);
+    }
+
+    #[test]
+    fn test_need_download() {
+        let mut driver = ChromeDriver::new();
+        driver.version = "100.0.0.0".to_string();
+        driver.browser_version = "100.0.0.0".to_string();
+        assert!(!driver.need_download());
+
+        driver.browser_version = "101.0.0.0".to_string();
+        assert!(driver.need_download());
+    }
+}
