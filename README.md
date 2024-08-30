@@ -1,8 +1,13 @@
-# chromedriver
+# chromedriver-update
 
 Automatically download Chromedriver when browser/driver versions do not match.
 
-# usage
+[![Documentation](https://docs.rs/chromedriver-update/badge.svg?style=flat-square)](https://docs.rs/chromedriver-update)
+[![License](https://img.shields.io/crates/l/chromedriver-update.svg?style=flat-square)](LICENSE)
+[![Crates.io](https://img.shields.io/crates/d/chromedriver-update.svg?style=flat-square)](https://crates.io/crates/chromedriver-update)
+[![Crates.io](https://img.shields.io/crates/v/chromedriver-update.svg?style=flat-square)](https://crates.io/crates/chromedriver-update)
+
+## Getting start with cmd
 
 ### install
 
@@ -10,10 +15,12 @@ Automatically download Chromedriver when browser/driver versions do not match.
 cargo install chromedriver-update
 ```
 
-### run
+### params
 
-##### --browser-path: chrome browser path
-##### --driver-path: chrome driver path, create when file not exist
+- `--browser-path`: Chrome 浏览器路径
+- `--driver-path`: Chromedriver 路径（如果文件不存在，将会创建）
+
+### example
 
 ```bash
 # mac
@@ -26,23 +33,23 @@ chromedriver-update \
     --browser-path="/usr/bin/google-chrome" \
     --driver-path="/usr/bin/chromedriver"
 
-# windows (only tested in github workflow)
+# windows
 chromedriver-update \
     --browser-path="C:\setup-chrome\chromium\120.0.6099.109\x64\chrome.exe" \
     --driver-path="C:\setup-chrome\chromedriver.exe"
 ```
 
-# code usage
+## Getting start with code
 
 > require rust >= v1.80
 
-### add package
+### add dependency
 
 ```bash
 cargo add chromedriver-update
 ```
 
-### code examples
+### examples
 
 - /examples/default_args.rs
 ```rust
