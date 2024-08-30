@@ -13,14 +13,15 @@ jobs:
     name: mac-arm
     runs-on: macos-latest
     steps:
-      - name: setup chrome
-        uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 120
-      - name: setup rust
-        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-      - name: checkout
-        uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions/checkout@v4
       - name: build
         run: cargo build --release
       - name: use
@@ -42,14 +43,15 @@ jobs:
     name: mac-intel
     runs-on: macos-13
     steps:
-      - name: setup chrome
-        uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 120
-      - name: setup rust
-        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-      - name: checkout
-        uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions/checkout@v4
       - name: build
         run: cargo build --release
       - name: use
@@ -71,14 +73,15 @@ jobs:
     name: linux
     runs-on: ubuntu-latest
     steps:
-      - name: setup chrome
-        uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 120
-      - name: setup rust
-        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-      - name: checkout
-        uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions/checkout@v4
       - name: build
         run: cargo build --release
       - name: use
@@ -100,14 +103,15 @@ jobs:
     name: windows
     runs-on: windows-latest
     steps:
-      - name: setup chrome
-        uses: browser-actions/setup-chrome@v1
+      - uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 120
-      - name: setup rust
-        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-      - name: checkout
-        uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions/checkout@v4
       - name: build
         run: cargo build --release
       - name: use
