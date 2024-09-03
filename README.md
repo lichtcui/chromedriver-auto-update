@@ -17,8 +17,8 @@ cargo install chromedriver-update
 
 ### params
 
-- `--browser-path`: Chrome 浏览器路径
-- `--driver-path`: Chromedriver 路径（如果文件不存在，将会创建）
+- `--browser-path`: Chrome browser path
+- `--driver-path`: Chromedriver path (create if not exist)
 
 ### example
 
